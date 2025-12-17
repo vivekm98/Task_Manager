@@ -15,11 +15,10 @@ loginForm.addEventListener("submit", async (e) => {
       { username, password }
     );
 
-    // Save tokens
+   
     localStorage.setItem("access", response.data.access);
     localStorage.setItem("refresh", response.data.refresh);
 
-    // Redirect to dashboard
     window.location.href = "index.html";
 
   } catch (error) {
