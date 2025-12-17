@@ -1,57 +1,43 @@
+// ---------------------- DOM Elements ----------------------
 const taskForm = document.getElementById("taskForm");
 const tasksList = document.getElementById("tasksList");
 const logoutBtn = document.getElementById("logoutBtn");
 
-// Pagination & Filter state
+// Filter & Pagination state
 let currentPage = 1;
 let currentFilter = "all";
 
-// Get token from localStorage
+// ---------------------- Auth Check ----------------------
 const accessToken = localStorage.getItem("access");
 if (!accessToken) {
-  window.location.href = "login.html"; // redirect if not logged in
+  window.location.href = "login.html";
 }
 
-// Axios instance with JWT
+// ---------------------- Axios Instance ----------------------
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api/auth/",
-  headers: {
-    Authorization: `Bearer ${accessToken}`,
-  },
+  headers: { Authorization: `Bearer ${accessToken}` },
 });
 
-// Logout
-logoutBtn.addEventListener("click", () => {
+// ---------------------- Logout ----------------------
+logoutBtn?.addEventListener("click", () => {
   localStorage.removeItem("access");
   localStorage.removeItem("refresh");
   window.location.href = "login.html";
 });
 
-// Filter buttons
-document.getElementById("filterAll")?.addEventListener("click", () => { currentFilter = "all"; currentPage = 1; fetchTasks(); });
-document.getElementById("filterCompleted")?.addEventListener("click", () => { currentFilter = "completed"; currentPage = 1; fetchTasks(); });
-document.getElementById("filterPending")?.addEventListener("click", () => { currentFilter = "pending"; currentPage = 1; fetchTasks(); });
+// ---------------------- Filters ----------------------
+document.getElementById("filterAll")?.addEventListener("click", () => {
+  currentFilter = "all"; currentPage = 1; fetchTasks();
+});
+document.getElementById("filterCompleted")?.addEventListener("click", () => {
+  currentFilter = "completed"; currentPage = 1; fetchTasks();
+});
+document.getElementById("filterPending")?.addEventListener("click", () => {
+  currentFilter = "pending"; currentPage = 1; fetchTasks();
+});
 
-// Fetch tasks with filter and pagination
-const fetchTasks = async () => {
-  try {
-    let url = `tasks/?page=${currentPage}`;
-    if (currentFilter !== "all") url += `&status=${currentFilter}`;
-
-    const response = await api.get(url);
-
-    // Pass tasks array to displayTasks
-    displayTasks(response.data.results);
-
-    // Setup pagination
-    setupPagination(response.data);
-  } catch (error) {
-    console.error(error);
-    tasksList.innerHTML = `<p class="text-danger">Failed to load tasks</p>`;
-  }
-};
-
-// Display tasks in DOM
+// ---------------------- Display Tasks ----------------------
 const displayTasks = (tasks) => {
   tasksList.innerHTML = "";
 
@@ -63,34 +49,38 @@ const displayTasks = (tasks) => {
   tasks.forEach(task => {
     const taskCard = document.createElement("div");
     taskCard.className = "card mb-2 p-3 d-flex justify-content-between align-items-center flex-row";
+
     taskCard.innerHTML = `
       <div>
         <input type="checkbox" class="form-check-input me-2" ${task.status ? "checked" : ""} data-id="${task.id}">
         <strong>${task.title}</strong> - ${task.description || ""}
       </div>
-      <button class="btn btn-sm btn-danger" data-id="${task.id}">Delete</button>
+      <div>
+        <button class="btn btn-sm btn-primary me-2">Edit</button>
+        <button class="btn btn-sm btn-danger">Delete</button>
+      </div>
     `;
 
     // Checkbox toggle
     taskCard.querySelector('input[type="checkbox"]').addEventListener("change", async (e) => {
-      const checked = e.target.checked;
       try {
-        await api.patch(`tasks/${task.id}/`, { status: checked });
+        await api.patch(`tasks/${task.id}/`, { status: e.target.checked });
         fetchTasks();
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
+    });
+
+    // Edit button
+    taskCard.querySelector("button.btn-primary").addEventListener("click", () => {
+      window.location.href = `update.html?id=${task.id}`;
     });
 
     // Delete button
-    taskCard.querySelector("button").addEventListener("click", async () => {
+    taskCard.querySelector("button.btn-danger").addEventListener("click", async () => {
       if (confirm("Are you sure you want to delete this task?")) {
-        try {
-          await api.delete(`tasks/${task.id}/`);
-          fetchTasks();
-        } catch (err) {
-          console.error(err);
-        }
+        try { 
+          await api.delete(`tasks/${task.id}/`); 
+          fetchTasks(); 
+        } catch (err) { console.error(err); }
       }
     });
 
@@ -98,7 +88,7 @@ const displayTasks = (tasks) => {
   });
 };
 
-// Setup pagination
+// ---------------------- Pagination ----------------------
 const setupPagination = (data) => {
   const pagination = document.getElementById("pagination");
   if (!pagination) return;
@@ -106,7 +96,7 @@ const setupPagination = (data) => {
   pagination.innerHTML = "";
 
   const totalTasks = data.count || 0;
-  const pageSize = 5; // same as backend
+  const pageSize = 5; // backend page size
   const totalPages = Math.ceil(totalTasks / pageSize);
 
   for (let i = 1; i <= totalPages; i++) {
@@ -122,43 +112,57 @@ const setupPagination = (data) => {
   }
 };
 
-// Create Task
+// ---------------------- Fetch Tasks ----------------------
+const fetchTasks = async () => {
+  try {
+    let url = `tasks/?page=${currentPage}`;
+    if (currentFilter !== "all") url += `&status=${currentFilter}`;
+    
+    const res = await api.get(url);
+    displayTasks(res.data.results);
+    setupPagination(res.data);
+  } catch (err) {
+    console.error(err);
+    tasksList.innerHTML = `<p class="text-danger">Failed to load tasks</p>`;
+  }
+};
+
+// ---------------------- Add Task ----------------------
 taskForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
   const title = document.getElementById("title").value.trim();
   const description = document.getElementById("description").value.trim();
-
   if (!title) return;
 
   try {
     await api.post("tasks/", { title, description });
     taskForm.reset();
     fetchTasks();
-  } catch (err) {
-    console.error(err);
-  }
+  } catch (err) { console.error(err); }
 });
 
-// Initial fetch
-fetchTasks();
-
+// ---------------------- Axios Interceptor (Refresh Token) ----------------------
 api.interceptors.response.use(
   response => response,
   async error => {
     if (error.response.status === 401) {
       const refreshToken = localStorage.getItem("refresh");
       if (refreshToken) {
-        // call refresh token endpoint
-        const res = await axios.post("http://127.0.0.1:8000/api/auth/token/refresh/", { refresh: refreshToken });
-        localStorage.setItem("access", res.data.access);
-        error.config.headers['Authorization'] = `Bearer ${res.data.access}`;
-        return axios(error.config);
+        try {
+          const res = await axios.post("http://127.0.0.1:8000/api/auth/token/refresh/", { refresh: refreshToken });
+          localStorage.setItem("access", res.data.access);
+          error.config.headers['Authorization'] = `Bearer ${res.data.access}`;
+          return axios(error.config);
+        } catch {
+          window.location.href = "login.html";
+        }
       } else {
         window.location.href = "login.html";
       }
     }
     return Promise.reject(error);
-    
   }
 );
 
+// ---------------------- Initial Fetch ----------------------
+fetchTasks();
