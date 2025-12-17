@@ -102,6 +102,28 @@ http://127.0.0.1:8000/
 ```
 
 ---
+## 👥 User Groups & Permissions
+
+This project uses **Django Groups** for role-based access control.
+
+### 🔹 Steps to Create Groups
+1. Login to Django Admin:
+http://127.0.0.1:8000/admin/
+
+2. Go to **Authentication and Authorization → Groups**
+
+3. Create Groups:
+- **Admin**
+- **User**
+
+4. Assign Permissions:
+- Admin Group:
+  - Can view, add, change, delete **Task**
+- User Group:
+  - Can view, add, change **own Task**
+
+5. Assign Users to Groups:
+- Open a user → select Group → Save
 
 ## 🌐 Frontend Setup
 
@@ -116,8 +138,8 @@ http://127.0.0.1:8000/
 | Method | Endpoint                   | Description   |
 | ------ | -------------------------- | ------------- |
 | POST   | `/api/auth/register/`      | Register user |
-| POST   | `/api/auth/token/`         | Login         |
-| POST   | `/api/auth/token/refresh/` | Refresh token |
+| POST   | `/api/auth/login/`         | Login         |
+| POST   | `/api/auth/refresh/`       | Refresh token |
 | GET    | `/api/auth/tasks/`         | List tasks    |
 | POST   | `/api/auth/tasks/`         | Create task   |
 | PATCH  | `/api/auth/tasks/<id>/`    | Update task   |
