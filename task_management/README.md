@@ -35,52 +35,6 @@ A full-stack **Task Management System** built using **Django REST Framework** an
 
 ---
 
-## 📂 Project Structure
-
-Task_Manager/
-├── Backend/
-│ ├── task_management/
-│ │ ├── settings.py
-│ │ ├── urls.py
-│ │ ├── wsgi.py
-│ │ └── asgi.py
-│ ├── task/
-│ │ ├── migrations/
-│ │ ├── admin.py
-│ │ ├── apps.py
-│ │ ├── models.py
-│ │ ├── views.py
-│ │ ├── serializers.py
-│ │ ├── urls.py
-│ │ └── permissions.py
-│ ├── manage.py
-│ └── requirements.txt
-├── Frontend/
-│ ├── index.html
-│ ├── login.html
-│ ├── register.html
-│ ├── edit.html
-│ ├── css/
-│ │ └── style.css
-│ ├── js/
-│ │ ├── auth.js
-│ │ ├── index.js
-│ │ ├── addTask.js
-│ │ └── updateTask.js
-│ └── assets/
-│ └── images/
-├── screenshots/
-│ ├── login.png
-│ ├── register.png
-│ ├── dashboard.png
-│ └── edit_task.png
-├── README.md
-└── .gitignore
-
-
-
----
-
 ## ⚙️ Backend Setup
 
 ```bash
@@ -89,7 +43,7 @@ python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 
-
+```
 🌐 Frontend Setup
 
 Open login.html in browser
