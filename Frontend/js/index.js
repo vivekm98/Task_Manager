@@ -1,4 +1,4 @@
-// ---------------------- DOM Elements ----------------------
+
 const taskForm = document.getElementById("taskForm");
 const tasksList = document.getElementById("tasksList");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -140,6 +140,8 @@ taskForm?.addEventListener("submit", async (e) => {
     fetchTasks();
   } catch (err) { console.error(err); }
 });
+
+
 
 // ---------------------- Axios Interceptor (Refresh Token) ----------------------
 api.interceptors.response.use(

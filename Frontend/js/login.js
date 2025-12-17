@@ -1,8 +1,10 @@
-const form = document.getElementById("loginForm");
-const message = document.getElementById("message");
+const loginForm = document.getElementById("loginForm");
+const errorMsg = document.getElementById("errorMsg");
 
-form.addEventListener("submit", async (e) => {
+loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  errorMsg.innerText = ""; // clear old error
 
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -13,24 +15,18 @@ form.addEventListener("submit", async (e) => {
       { username, password }
     );
 
-    // ✅ Save JWT tokens in localStorage
+    // Save tokens
     localStorage.setItem("access", response.data.access);
     localStorage.setItem("refresh", response.data.refresh);
 
-    message.innerText = "Login successful";
-    message.className = "text-success";
-
-    // 🔁 Redirect to index.html after short delay
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 1000);
+    // Redirect to dashboard
+    window.location.href = "index.html";
 
   } catch (error) {
-    if (error.response && error.response.data) {
-      message.innerText = error.response.data.detail;
+    if (error.response?.data?.detail) {
+      errorMsg.innerText = error.response.data.detail;
     } else {
-      message.innerText = "Server not reachable";
+      errorMsg.innerText = "Login failed. Try again.";
     }
-    message.className = "text-danger";
   }
 });

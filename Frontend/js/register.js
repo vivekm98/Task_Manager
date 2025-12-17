@@ -16,11 +16,10 @@ form.addEventListener("submit", async (e) => {
       }
     );
 
-    // show API success message
     message.innerText = response.data.message || "Registered successfully";
     message.className = "text-success";
 
-    // 🔁 redirect to login after 1.5 seconds
+ 
     setTimeout(() => {
       window.location.href = "login.html";
     }, 1500);

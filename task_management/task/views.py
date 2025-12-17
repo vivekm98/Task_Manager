@@ -5,6 +5,9 @@ from .serializers import UserSerializer
 from rest_framework import generics, permissions
 from .models import Task
 from .serializers import TaskSerializer
+from rest_framework import generics, permissions
+from rest_framework.pagination import PageNumberPagination
+from .permissions import IsOwnerOrAdmin
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -12,15 +15,8 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-
-from rest_framework import generics, permissions
-from rest_framework.pagination import PageNumberPagination
-from .models import Task
-from .serializers import TaskSerializer
-
-# Pagination class
 class TaskPagination(PageNumberPagination):
-    page_size = 5  # tasks per page
+    page_size = 50  
     page_size_query_param = "page_size"
     max_page_size = 50
 
@@ -31,21 +27,31 @@ class TaskListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        status = self.request.query_params.get("status")  # filter by status
-        queryset = Task.objects.filter(owner=user)
+        status = self.request.query_params.get("status")
+
+        if user.groups.filter(name="Admin").exists():
+            queryset = Task.objects.all()
+        else:
+            queryset = Task.objects.filter(owner=user)
+
         if status == "completed":
             queryset = queryset.filter(status=True)
         elif status == "pending":
             queryset = queryset.filter(status=False)
+
         return queryset
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-
-class TaskRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrAdmin]
 
     def get_queryset(self):
-        return Task.objects.filter(owner=self.request.user)
+        user = self.request.user
+
+        if user.groups.filter(name="Admin").exists():
+            return Task.objects.all()
+
+        return Task.objects.filter(owner=user)
