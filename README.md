@@ -1,10 +1,4 @@
-Perfect 👍
-Here is a **clean, professional `README.md`** for your **Django + JWT Task Management App**.
-You can **copy–paste this directly** into `README.md`.
 
----
-
-```md
 # 📝 Task Management System (Django + JWT)
 
 A **Task Management Web Application** built using **Django REST Framework** with **JWT Authentication** and a **vanilla JavaScript + Bootstrap frontend**.
@@ -57,54 +51,6 @@ This project supports:
 
 ---
 
-## 📂 Project Structure
-
-```
-
-Task_Manager/
-│
-├── Backend/
-│   ├── task_management/
-│   │   ├── settings.py
-│   │   ├── urls.py
-│   │   ├── wsgi.py
-│   │   ├── asgi.py
-│   │
-│   ├── task/
-│   │   ├── migrations/
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── models.py
-│   │   ├── serializers.py
-│   │   ├── views.py
-│   │   ├── urls.py
-│   │   └── permissions.py
-│   │
-│   ├── manage.py
-│   └── requirements.txt
-│
-├── Frontend/
-│   ├── index.html
-│   ├── login.html
-│   ├── register.html
-│   ├── edit.html
-│   ├── css/
-│   │   └── style.css
-│   ├── js/
-│   │   ├── auth.js
-│   │   ├── index.js
-│   │   ├── addTask.js
-│   │   └── updateTask.js
-│   └── assets/
-│
-├── screenshots/
-│   ├── login.png
-│   ├── register.png
-│   ├── dashboard.png
-│   └── edit_task.png
-│
-├── README.md
-└── .gitignore
 
 ````
 
@@ -193,19 +139,16 @@ http://127.0.0.1:8000/
 
 ### 🔐 Login Page
 
-![Login](screenshots/login.png)
+![Login](screenshots/screenshots/login.png)
 
 ### 📝 Register Page
 
-![Register](screenshots/register.png)
+![Register](screenshots/screenshots/register.png)
 
 ### 📊 Dashboard
 
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](screenshots/screenshots/dashboard.png)
 
-### ✏️ Edit Task
-
-![Edit Task](screenshots/edit_task.png)
 
 ---
 
