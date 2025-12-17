@@ -38,18 +38,51 @@ A full-stack **Task Management System** built using **Django REST Framework** an
 ## 📂 Project Structure
 
 Task_Manager/
-├── backend/
-│ ├── task_management/
-│ ├── task/
-│ └── manage.py
-├── frontend/
-│ ├── index.html
-│ ├── login.html
-│ ├── register.html
-│ |── update.html
-| |___js/
-|  
-└── README.md
+│
+├── Backend/                    # Django backend
+│   ├── task_management/        # Django project folder
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   ├── wsgi.py
+│   │   └── asgi.py
+│   │
+│   ├── task/                   # Django app for tasks
+│   │   ├── migrations/
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   └── permissions.py
+│   │
+│   ├── manage.py
+│   └── requirements.txt        # pip freeze output
+│
+├── Frontend/                   # Frontend files
+│   ├── index.html
+│   ├── login.html
+│   ├── register.html
+│   ├── edit.html
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   ├── auth.js
+│   │   ├── index.js
+│   │   ├── addTask.js
+│   │   └── updateTask.js
+│   └── assets/
+│       └── images/             # Screenshots or logos
+│
+├── screenshots/                # For README.md screenshots
+│   ├── login.png
+│   ├── register.png
+│   ├── dashboard.png
+│   └── edit_task.png
+│
+├── README.md
+└── .gitignore
+
 
 
 ---
